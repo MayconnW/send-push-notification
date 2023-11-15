@@ -13,7 +13,7 @@ import {
 interface CsvUploadProps {
   onTokensParsed: (tokens: string[]) => void;
   activeTab: string;
-  setActiveTab: React.Dispatch<React.SetStateAction<string>>
+  setActiveTab: React.Dispatch<React.SetStateAction<'singleToken' | 'bulkUpload'>>
 }
 
 export const CsvUpload: React.FC<CsvUploadProps> = ({ onTokensParsed, activeTab, setActiveTab }) => {
