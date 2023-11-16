@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
 import {
   Form,
@@ -40,7 +41,7 @@ export const MessageForm: React.FC<MessageFormProps> = ({ onSubmit }) => {
     onSubmit({ title, body, serverKey, route: selectedValue });
   };
 
-  const handleSelectChange = (selectedOption: {value: string}) => {
+  const handleSelectChange = (selectedOption: any) => {
     console.log('Selecionei: ', selectedOption);
     setSelectedValue(selectedOption.value);
   };
