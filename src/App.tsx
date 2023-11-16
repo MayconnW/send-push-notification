@@ -75,7 +75,7 @@ const App: React.FC = () => {
 
         console.log(`Enviado lot ${i} with ${JSON.stringify({data: {...payload.data}, notification: {...payload.notification}})}`)
   
-        if (i < lots.length) {
+        if ((i +1) < lots.length) {
           await sleep(20000);
         }
         
