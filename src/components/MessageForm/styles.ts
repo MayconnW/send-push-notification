@@ -3,14 +3,10 @@ import styled from 'styled-components';
 import Select from 'react-select';
 
 export const Form = styled.form`
-  margin: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  width: 400px;
-  padding: 18px;
+  width: 460px;
 `;
 
 export const FormField = styled.div`
@@ -32,25 +28,16 @@ export const Input = styled.input`
   border-radius: 5px;
 `;
 
-export const SubmitButton = styled.button`
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  background-color: #008CBA;
-  color: white;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #007B9E;
-  }
-`;
-
 export const darkThemeStyles = {
   control: (styles: any) => ({
     ...styles,
     backgroundColor: '#3b3b3b',
     color: 'white',
-    borderColor: '#646cff'
+    borderColor: '#ddd',
+    height: '42px',
+    '&:hover': {
+      borderColor: '#ddd' 
+   }
   }),
   option: (styles: any, { isFocused }: any) => {
     return {
@@ -66,7 +53,7 @@ export const darkThemeStyles = {
   menu: (styles: any) => ({
     ...styles,
     backgroundColor: '#3b3b3b',
-    borderColor: '#646cff'
+    borderColor: '#646cff',
   })
 };
 

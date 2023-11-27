@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Papa from 'papaparse';
 import { 
-  UploadButton,
   TabContainer,
   UploadContainer,
   Tab,
@@ -9,14 +8,18 @@ import {
   Input,
   FileInput
 } from './styles';
+import { Button, Flex } from '@chakra-ui/react';
+import { ArrowForwardIcon } from '@chakra-ui/icons';
 
 interface CsvUploadProps {
   onTokensParsed: (tokens: string[]) => void;
-  activeTab: string;
+  activeTab: 'singleToken' | 'bulkUpload';
   setActiveTab: React.Dispatch<React.SetStateAction<'singleToken' | 'bulkUpload'>>
+  handleNextStep: () => void;
 }
 
-export const CsvUpload: React.FC<CsvUploadProps> = ({ onTokensParsed, activeTab, setActiveTab }) => {
+export const CsvUpload: React.FC<CsvUploadProps> = ({ onTokensParsed, activeTab, setActiveTab, handleNextStep }) => {
+  const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
 
   const [singleToken, setSingleToken] = useState('');
@@ -33,40 +36,77 @@ export const CsvUpload: React.FC<CsvUploadProps> = ({ onTokensParsed, activeTab,
     onTokensParsed([singleToken]);
   }
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (file) {
-      Papa.parse(file, {
-        complete: (results) => {
-          const tokens = results.data.filter((row): row is string[] => Array.isArray(row)).map(row => row[0]);
-          console.log('tokens', tokens);
-          onTokensParsed(tokens);
-        }
+      return new Promise((resolve) => {
+        Papa.parse(file, {
+          complete: (results) => {
+            const tokens = results.data.filter((row): row is string[] => Array.isArray(row)).map(row => row[0]);
+            onTokensParsed(tokens);
+            resolve(true);
+          }
+        });
       });
     }
-  };  
+  };
+
+  const handleNext = async () => {
+    try {
+      setLoading(true);
+
+      if (activeTab === 'singleToken') {
+        if (!singleToken) {
+          alert('Token not provided');
+          return;
+        }
+        handleSingleToken();
+        handleNextStep();
+        return;
+      }
+      if (activeTab === 'bulkUpload') {
+        if (!file) {
+          alert('File not selected');
+          return;
+        }
+        await handleUpload();
+        handleNextStep();
+        return;
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <UploadContainer>
       <TabContainer>
-        <Tab isActive={activeTab === 'singleToken'} onClick={() => setActiveTab('singleToken')}>Single Token</Tab>
-        <Tab isActive={activeTab === 'bulkUpload'} onClick={() => setActiveTab('bulkUpload')}>Bulk Upload</Tab>
+        <Tab active={activeTab === 'singleToken' ? 1 : 0} onClick={() => setActiveTab('singleToken')}>Single Token</Tab>
+        <Tab active={activeTab === 'bulkUpload' ? 1 : 0} onClick={() => setActiveTab('bulkUpload')}>Bulk Upload</Tab>
       </TabContainer>
       <Content>
         {activeTab === 'singleToken' && (
-          <>
-            <Input type="text" value={singleToken} onChange={handleSingleTokenChange} placeholder="Enter Firebase Token" />
-            <UploadButton onClick={handleSingleToken}>Confirm</UploadButton>
-          </>
+          <Input type="text" value={singleToken} onChange={handleSingleTokenChange} placeholder="Enter Firebase Push Token" />
         )}
 
         {activeTab === 'bulkUpload' && (
-          <>
-            <FileInput type="file" onChange={handleFileChange} />
-            <UploadButton onClick={handleUpload}>Upload</UploadButton>
-          </>
+          <FileInput type="file" onChange={handleFileChange}/>
         )}
       </Content>
+      <Flex
+        w="100%"
+        justifyContent="flex-end"
+        mt="4"
+      >
+        <Button 
+          rightIcon={<ArrowForwardIcon />} 
+          _focus={{outline: 'none'}} 
+          onClick={handleNext}
+          isLoading={loading}
+          isActive={!loading}
+        >
+          Next
+        </Button> 
+      </Flex>
     </UploadContainer>
   );
 };
-

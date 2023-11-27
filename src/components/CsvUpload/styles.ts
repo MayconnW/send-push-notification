@@ -1,43 +1,23 @@
 import styled from 'styled-components';
 
 export const UploadContainer = styled.div`
-  margin: 20px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
   text-align: center;
-  width: 400px;
-  height: 128px;
+  width: 460px;
 `;
 
-export const UploadButton = styled.button`
-  padding: 8px 15px;
-  border: none;
-  border-radius: 5px;
-  background-color: #4CAF50;
-  color: white;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #45a049;
-  }
-`;
-
-type TabProps = { isActive: boolean };
+type TabProps = { active: number };
 
 export const Content = styled.div`
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-top: none;
+  padding: 20px 0;
   display: flex;
-  height: 46px;
+  width: 100%;
 `;
 
 export const TabContainer = styled.div`
   display: grid;
   width: 100%;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 0px;
 `;
 
 export const Tab = styled.button<TabProps>`
@@ -48,30 +28,21 @@ export const Tab = styled.button<TabProps>`
   cursor: pointer;
   transition: border-color 0.25s;
 
-  border-color: ${(props) => (props.isActive ? '#646cff' : 'none')};
+  border-color: ${(props) => (props.active ? '#ddd' : 'none')};
+  outline: ${(props) => props.active ? '4px auto -webkit-focus-ring-color' : 'none'};
 
   &:hover {
-    border-color: #646cff; // Hover effect as per global style
+    border-color: #ddd; // Hover effect as per global style
   }
 
   &.active {
-    background-color: #646cff; // Active tab color
+    background-color: #ddd; // Active tab color
     color: white;
   }
 
   &:focus,
   &:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
-  }
-
-  @media (prefers-color-scheme: light) {
-    background-color: #f9f9f9; // Light background for light mode
-    color: #213547; // Dark text for light mode
-
-    &.active {
-      background-color: #747bff; // Active tab color for light mode
-      color: white;
-    }
   }
 `;
 
@@ -80,10 +51,13 @@ export const Input = styled.input`
   border: 1px solid #ddd;
   border-radius: 5px;
   width: 100%;
+  background: rgb(59 59 59);
 `;
 
 export const FileInput = styled.input`
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 5px;
+  width: 100%;
+  background: rgb(59 59 59);
 `;

@@ -5,13 +5,16 @@ import {
   FormField,
   Label,
   Input,
-  SubmitButton,
   StyledSelect
 } from './styles';
 import {NamedRoutes, namedRoutes} from './namedRoutes';
+import { Button, Flex } from '@chakra-ui/react';
+import { ArrowBackIcon, CheckIcon } from '@chakra-ui/icons';
 
 interface MessageFormProps {
-  onSubmit: (data: { title: string; body: string; serverKey: string; route: string }) => void;
+  onSubmit: (data: { title: string; body: string; route: string; branchTitle?: string; branchBody?: string }) => void;
+  handleBack: () => void;
+  isSingleToken: boolean;
 }
 
 const transformDataToOptions = (data: NamedRoutes) => {
@@ -30,15 +33,16 @@ const transformDataToOptions = (data: NamedRoutes) => {
   return options;
 };
 
-export const MessageForm: React.FC<MessageFormProps> = ({ onSubmit }) => {
+export const MessageForm: React.FC<MessageFormProps> = ({ onSubmit, handleBack, isSingleToken }) => {
   const [title, setTitle] = useState<string>('');
   const [body, setBody] = useState<string>('');
+  const [branchTitle, setBranchTitle] = useState<string>('');
+  const [branchBody, setBranchBody] = useState<string>('');
   const [selectedValue, setSelectedValue] = useState('');
-  const [serverKey, setServerKey] = useState<string>('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ title, body, serverKey, route: selectedValue });
+    onSubmit({ title, body, route: selectedValue, branchBody, branchTitle });
   };
 
   const handleSelectChange = (selectedOption: any) => {
@@ -50,23 +54,51 @@ export const MessageForm: React.FC<MessageFormProps> = ({ onSubmit }) => {
 
   return (
     <Form onSubmit={handleSubmit}>
-      <FormField>
-        <Label>Server Key:</Label>
-        <Input type="text" value={serverKey} onChange={(e) => setServerKey(e.target.value)} />
-      </FormField>
+      {isSingleToken ? (
+        <h5>Single token selected</h5>
+      ) : (
+        <h5>CSV file selected</h5>
+      )}
       <FormField>
         <Label>Title:</Label>
         <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+      </FormField>
+      <FormField>
+        <Label>Branch Title:</Label>
+        <Input type="text" value={branchTitle} onChange={(e) => setBranchTitle(e.target.value)} />
       </FormField>
       <FormField>
         <Label>Body:</Label>
         <Input type="text" value={body} onChange={(e) => setBody(e.target.value)} />
       </FormField>
       <FormField>
+        <Label>Branch Body:</Label>
+        <Input type="text" value={branchBody} onChange={(e) => setBranchBody(e.target.value)} />
+      </FormField>
+      <FormField>
         <Label>Route:</Label>
         <StyledSelect options={options} onChange={handleSelectChange} value={options.find(option => option.value === selectedValue)}/>
       </FormField>
-      <SubmitButton type="submit">Send Notification</SubmitButton>
+      <Flex
+        w="100%"
+        justifyContent="space-between"
+        mt="4"
+      >
+        <Button 
+          leftIcon={<ArrowBackIcon />} 
+          _focus={{outline: 'none'}} 
+          onClick={handleBack}
+        >
+          Back
+        </Button> 
+        <Button
+          rightIcon={<CheckIcon />}
+          _focus={{outline: 'none'}} 
+          type="submit"
+        >
+          {`Send Notification${isSingleToken ? 's' : ''}`}
+        </Button>
+      </Flex>
     </Form>
   );
 };
