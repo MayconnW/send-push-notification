@@ -128,6 +128,7 @@ const namedRoutes = {
   reviewRate: 'review-rate',
   pendingPayments: 'pending-payments',
   emotional: 'emotional',
+  retrospective: 'retrospective',
 } as const;
 
 export type NamedRoutes = typeof namedRoutes;
